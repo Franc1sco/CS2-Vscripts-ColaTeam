@@ -14,7 +14,6 @@ end
 
 
 function OnRoundFreezeEnd(event)
-    print(Convars:GetInt("show_advert_round_delay") .. " SHOW ADVERT CVAR")
     if roundCounter == 0 then
 		for _, v in pairs(AdvertList) do
 			PrintChatAll(v)
