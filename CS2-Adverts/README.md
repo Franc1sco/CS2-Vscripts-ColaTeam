@@ -6,6 +6,7 @@
 * Put into your /game/bin/win64 or /game/bin/linuxsteamrt64 directory
 * Put the .lua files into /game/csgo/scripts/vscripts
 * Add **sv_cheats 1; script_reload_code franug_adverts; sv_cheats 0** to the bottom of your server.cfg
+* Configure the amount of rounds you want to wait before displaying the messages again, add this below the previous step: **show_advert_round_delay 5**.
 * Restart your server
 
 ### Configuration
