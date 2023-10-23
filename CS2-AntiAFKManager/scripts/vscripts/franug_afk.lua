@@ -6,8 +6,72 @@ AFK_Seconds = 40
 require("util.timers")
 
 afkPos = {}
+local connectedPlayers = {}
 
-function OnRoundStartAFK(event)
+function AFKEHandleToHScript(iPawnId)
+    return EntIndexToHScript(bit.band(iPawnId, 0x3FFF))
+end
+
+function table.AFKGetNameFromPawn(tbl, value)
+    for i = #tbl, 1, -1 do
+        if tbl[i].pawn ~= nil then
+            if AFKEHandleToHScript(tbl[i].pawn) == value then
+                return tbl[i].name
+            end
+        end
+    end
+    return ""
+end
+
+function AFKOnPlayerSpawn(event)
+    local usertableid = table.GetValue(connectedPlayers, event.userid)
+    if usertableid ~= nil then
+        table.RemoveValue(connectedPlayers, usertableid)
+        local playerData = {
+            name = usertableid.name,
+            userid = event.userid,
+            networkid = usertableid.networkid,
+            address = usertableid.address,
+            pawn = event.userid_pawn
+        }
+        table.insert(connectedPlayers, playerData)
+    end
+end
+
+function AFKOnTeam(event)
+    local usertableid = table.GetValue(connectedPlayers, event.userid)
+    if usertableid ~= nil then
+        table.RemoveValue(connectedPlayers, usertableid)
+        local playerData = {
+            name = usertableid.name,
+            userid = event.userid,
+            networkid = usertableid.networkid,
+            address = usertableid.address,
+            pawn = event.userid_pawn
+        }
+        table.insert(connectedPlayers, playerData)
+    end
+end
+
+function AFKOnPlayerConnect(event)
+	local playerData = {
+		name = event.name,
+		userid = event.userid,
+		networkid = event.networkid,
+		address = event.address,
+        --pawn = EHandleToHScript(event.userid_pawn)
+	}
+    table.insert(connectedPlayers, playerData)
+end
+
+function AFKOnPlayerDisconnect(event)
+    local usertableid = table.GetValue(connectedPlayers, event.userid)
+    if usertableid ~= nil then
+        table.RemoveValue(connectedPlayers, usertableid)
+    end
+end
+
+function AFKOnRoundStart(event)
 
     Timers:RemoveTimer("AFK_Timer")
 
@@ -43,6 +107,7 @@ function Move_AFK()
         if player:IsAlive() then
             if afkPos[player] ~= nil and CompareVectors(afkPos[player], player:GetAbsOrigin()) then
                 player:SetTeam(1)
+                ScriptPrintMessageChatAll(table.AFKGetNameFromPawn(connectedPlayers, player).. " was moved to spectator for be AFK.")
             end
         end
     end
@@ -56,5 +121,9 @@ function CompareVectors(v1, v2)
 end
 
 tListenerIds = {
-    ListenToGameEvent("round_start", OnRoundStartAFK, nil),
+    ListenToGameEvent("player_connect", AFKOnPlayerConnect, nil),
+    ListenToGameEvent("player_disconnect", AFKOnPlayerDisconnect, nil),
+    ListenToGameEvent("player_spawn", AFKOnPlayerSpawn, nil),
+    ListenToGameEvent("player_team", AFKOnTeam, nil),
+    ListenToGameEvent("round_start", AFKOnRoundStart, nil),
 }
