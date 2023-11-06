@@ -1,0 +1,1 @@
+Simple plugin for loading custom cfgs for each map. Add the mapconfigs.lua to your vscripts and create /cfg/maps/mapname.cfg to execute custom commands per map.

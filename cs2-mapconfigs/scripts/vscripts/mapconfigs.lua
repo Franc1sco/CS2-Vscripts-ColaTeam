@@ -1,0 +1,1 @@
+SendToServerConsole("exec " .. "maps/" .. GetMapName() .. ".cfg")
