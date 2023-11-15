@@ -474,7 +474,7 @@ function GiveWeapons2(hPlayer)
     end
 end
 
-function AdminOnPlayerConnect(event)
+function DMOnPlayerConnect(event)
 	local playerData = {
 		name = event.name,
 		userid = event.userid,
