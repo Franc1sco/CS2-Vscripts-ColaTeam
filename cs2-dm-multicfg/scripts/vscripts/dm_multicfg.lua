@@ -474,19 +474,6 @@ function GiveWeapons2(hPlayer)
     end
 end
 
-function DMOnPlayerConnect(event)
-	local playerData = {
-		name = event.name,
-		userid = event.userid,
-		networkid = event.networkid,
-		address = event.address,
-        --pawn = EHandleToHScript(event.userid_pawn)
-	}
-    table.insert(DMconnectedPlayers, playerData)
-    --print("conectado")
-	--connectedPlayers[event.userid] = playerData
-end
-
 function DMOnPlayerDisconnect(event)
     local usertableid = table.GetValue(DMconnectedPlayers, event.userid)
     if usertableid ~= nil then
